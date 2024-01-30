@@ -1,7 +1,9 @@
 import pandas
 import kfold_template
 
-from sklearn import tree
+# from sklearn import tree
+
+from sklearn.ensemble import RandomForestClassifier
 
 dataset = pandas.read_csv("temperature_data.csv")
 
@@ -30,14 +32,18 @@ data = data.values
 
 # max_depth == 'how many times you chop'. The more you chop the more you reach a gini impurity of zero
 # Rule of Thumb, start with a large max depth and go down. 
-machine = tree.DecisionTreeClassifier(criterion="gini", max_depth=3)
+
+machine = RandomForestClassifier(criterion="gini", max_depth=2, n_estimators=100, bootstrap = True)
+# you estimate n number of times... which means n number of trees. You ask those trees to make predictions. 
+# bootstrap is a technique of sampling from the sample itself, and with replacement. You draw, put it back, then draw again, n number of times. 
+# if there is a majority of the trees making a prediction, we pick that as our answer. 
 
 # kfold validation
 return_values = kfold_template.run_kfold(machine, data, target, 4, True)
 
-# print(return_values)
+print(return_values)
 
-machine = tree.DecisionTreeClassifier(criterion="gini", max_depth=3)
+machine = RandomForestClassifier(criterion="gini", max_depth=2, n_estimators=100, bootstrap = True)
 ## decrease max depth (10 -> 6). Run program for both, see which factors become less important. 
 
 machine.fit(data, target)
